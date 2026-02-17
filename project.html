@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sinch India - Dynamic Form Builder</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- External stylesheet -->
+    <link rel="stylesheet" href="project.css" />
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <h1>
+                <img src="logo-sinch.svg" alt="Sinch Logo" class="logo-icon">
+                Sinch<span>India</span>
+            </h1>
+        </div>
+
+        <nav>
+            <div class="nav-item active" onclick="switchView('dashboard')">
+                <span>📊</span>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-item" onclick="switchView('builder')">
+                <span>✏️</span>
+                <span>Form Builder</span>
+            </div>
+            <div class="nav-item" onclick="switchView('preview')">
+                <span>👁️</span>
+                <span>Preview</span>
+            </div>
+            <div class="nav-item" onclick="switchView('analytics')">
+                <span>📈</span>
+                <span>Analytics</span>
+            </div>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <!-- Dashboard -->
+        <div class="view active" id="dashboard">
+            <div class="view-header">
+                <div>
+                    <h2>Dashboard</h2>
+                    <p class="text-muted">Manage your forms</p>
+                </div>
+                <button class="btn btn-primary" onclick="createNewForm()">
+                    ➕ Create New Form
+                </button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Forms</div>
+                    <div class="stat-value" id="totalForms">0</div>
+                    <div class="stat-change" id="formsChange">All time</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Fields</div>
+                    <div class="stat-value" id="totalFields">0</div>
+                    <div class="stat-change" id="fieldsChange">Across all forms</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Submissions</div>
+                    <div class="stat-value" id="totalSubmissions">0</div>
+                    <div class="stat-change" id="submissionsChange">Combined responses</div>
+                </div>
+            </div>
+
+            <div>
+                <h3 style="margin-bottom: 1rem; color: var(--primary);">Your Forms</h3>
+                <div class="form-list" id="formList"></div>
+            </div>
+        </div>
+
+        <!-- Form Builder -->
+        <div class="view" id="builder">
+            <div class="view-header">
+                <div>
+                    <h2 id="formTitle">Form Builder</h2>
+                    <p class="text-muted">Click fields to add them</p>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-secondary" onclick="saveForm()">💾 Save</button>
+                    <button class="btn btn-primary" onclick="switchView('preview')">👁️ Preview</button>
+                </div>
+            </div>
+
+            <div class="builder-layout">
+                <!-- Field Library -->
+                <div class="builder-panel">
+                    <div class="panel-header">Field Types</div>
+                    <div id="fieldLibrary">
+                        <div class="field-type" onclick="addField('text')">
+                            <strong>📝 Text Input</strong>
+                            <div class="text-muted" style="font-size: 0.85rem;">Single line text</div>
+                        </div>
+                        <div class="field-type" onclick="addField('email')">
+                            <strong>✉️ Email</strong>
+                            <div class="text-muted" style="font-size: 0.85rem;">Email address</div>
+                        </div>
+                        <div class="field-type" onclick="addField('number')">
+                            <strong>🔢 Number</strong>
+                            <div class="text-muted" style="font-size: 0.85rem;">Numeric input</div>
+                        </div>
+                        <div class="field-type" onclick="addField('textarea')">
+                            <strong>📄 Text Area</strong>
+                            <div class="text-muted" style="font-size: 0.85rem;">Multi-line text</div>
+                        </div>
+                        <div class="field-type" onclick="addField('select')">
+                            <strong>📋 Dropdown</strong>
+                            <div class="text-muted" style="font-size: 0.85rem;">Select options</div>
+                        </div>
+                        <div class="field-type" onclick="addField('radio')">
+                            <strong>⭕ Radio</strong>
+                            <div class="text-muted" style="font-size: 0.85rem;">Single choice</div>
+                        </div>
+                        <div class="field-type" onclick="addField('checkbox')">
+                            <strong>☑️ Checkbox</strong>
+                            <div class="text-muted" style="font-size: 0.85rem;">Multiple choice</div>
+                        </div>
+                        <div class="field-type" onclick="addField('date')">
+                            <strong>📅 Date</strong>
+                            <div class="text-muted" style="font-size: 0.85rem;">Date picker</div>
+                        </div>
+                        <div class="field-type" onclick="addField('file')">
+                            <strong>📎 File Upload</strong>
+                            <div class="text-muted" style="font-size: 0.85rem;">Upload documents</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Canvas -->
+                <div class="builder-panel">
+                    <div class="panel-header">Form Canvas</div>
+                    <div class="form-canvas" id="formCanvas">
+                        <div class="canvas-placeholder">
+                            <h3>👆 Click a field type to add it</h3>
+                            <p class="text-muted">Build your form by adding fields</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configuration -->
+                <div class="builder-panel">
+                    <div class="panel-header">Field Settings</div>
+                    <div id="configPanel">
+                        <p class="text-muted" style="text-align: center; padding: 2rem 1rem;">
+                            Select a field to configure
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview -->
+        <div class="view" id="preview">
+            <div class="view-header">
+                <div>
+                    <h2>Preview</h2>
+                    <p class="text-muted">How your form looks</p>
+                </div>
+                <button class="btn btn-secondary" onclick="switchView('builder')">
+                    ← Back to Builder
+                </button>
+            </div>
+            <div class="preview-container" id="previewContainer">
+                <p class="text-muted" style="text-align: center; padding: 2rem;">
+                    Add fields to see preview
+                </p>
+            </div>
+        </div>
+
+        <!-- Analytics -->
+        <div class="view" id="analytics">
+            <div class="view-header">
+                <div>
+                    <h2>Analytics Overview</h2>
+                    <p class="text-muted">Performance metrics across all forms</p>
+                </div>
+            </div>
+
+            <div id="analyticsContent">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <!-- External JavaScript -->
+    <script src="project.js"></script>
+</body>
+</html>
